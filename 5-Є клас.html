@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>5-Є клас</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#f5f7fb;--surface:#ffffff;--text:#1c2233;--muted:#5b6377;
+  --accent:#3566d6;--accent-soft:#e7eefc;--border:#dde2ee;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#11141c;--surface:#1a1f2c;--text:#e7eaf2;--muted:#9ba4b9;
+    --accent:#7ea6ff;--accent-soft:#222b42;--border:#2c3447;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11141c;--surface:#1a1f2c;--text:#e7eaf2;--muted:#9ba4b9;
+  --accent:#7ea6ff;--accent-soft:#222b42;--border:#2c3447;
+  color-scheme:dark;
+}
+body{
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;
+}
+.hero{
+  background:linear-gradient(135deg,#3566d6,#6a4fd1);color:#fff;
+  padding:64px 20px 56px;text-align:center;
+}
+.hero h1{font-size:clamp(2.2rem,6vw,3.5rem);font-weight:800;letter-spacing:-.02em}
+.hero p{opacity:.92;margin-top:8px;font-size:1.1rem}
+nav{
+  display:flex;gap:8px;justify-content:center;flex-wrap:wrap;
+  padding:14px;background:var(--surface);border-bottom:1px solid var(--border);
+}
+nav a{
+  color:var(--accent);text-decoration:none;font-weight:600;
+  padding:6px 14px;border-radius:999px;
+}
+nav a:hover{background:var(--accent-soft)}
+main{max-width:960px;margin:0 auto;padding:24px 16px 48px}
+section{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;padding:24px;margin-bottom:20px;scroll-margin-top:16px;
+}
+h2{font-size:1.5rem;margin-bottom:12px}
+p{margin-bottom:8px}
+a{color:var(--accent)}
+.mt{margin-top:16px}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.card{background:var(--accent-soft);border-radius:12px;padding:16px}
+.card strong{display:block;margin-bottom:4px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:620px}
+th,td{padding:10px;border-bottom:1px solid var(--border);text-align:left;font-size:.95rem}
+th{color:var(--muted);font-weight:600}
+.time{display:block;color:var(--muted);font-size:.85rem;font-weight:400;white-space:nowrap}
+.today{background:var(--accent-soft);font-weight:600}
+.news{list-style:none}
+.news li{padding:12px 0;border-bottom:1px solid var(--border)}
+.news li:last-child{border-bottom:none}
+.hint{color:var(--muted);font-size:.9rem;margin-top:12px}
+.students{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px 12px;list-style:none;counter-reset:s}
+.students li{counter-increment:s;padding:10px 14px;background:var(--accent-soft);border-radius:10px}
+.students li::before{content:counter(s) ". ";color:var(--muted)}
+.page{display:none}
+.page.active{display:block}
+nav a.active{background:var(--accent);color:#fff}
+.page.active{animation:pageIn .6s ease backwards}
+.page.active .card,.page.active .students li,.page.active .news li,.page.active tbody tr{animation:fadeUp .5s ease backwards}
+.hero{position:relative;overflow:hidden;background-size:200% 200%;animation:gradientShift 8s ease infinite}
+.hero::before,.hero::after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.12);pointer-events:none}
+.hero::before{width:320px;height:320px;top:-140px;left:-90px;animation:float 9s ease-in-out infinite}
+.hero::after{width:260px;height:260px;bottom:-120px;right:-80px;animation:float 11s ease-in-out infinite reverse}
+.hero h1,.hero p{position:relative;z-index:1}
+.hero h1{animation:fadeUp .9s ease both}
+.hero p{animation:fadeUp .9s .15s ease both}
+.card{transition:transform .25s ease,box-shadow .25s ease}
+.card:hover{transform:translateY(-4px);box-shadow:0 10px 24px rgba(0,0,0,.12)}
+.students li{transition:transform .2s ease}
+.students li:hover{transform:translateX(6px)}
+nav a{transition:background-color .2s ease,transform .2s ease}
+nav a:hover{transform:translateY(-2px)}
+body,section,nav{transition:background-color .6s ease,color .6s ease,border-color .6s ease}
+.picker{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:var(--accent-soft);cursor:pointer;font-size:.9rem}
+.picker input{width:28px;height:28px;border:none;background:none;cursor:pointer;padding:0}
+.swatches{display:inline-flex;gap:6px;align-items:center}
+.sw{width:24px;height:24px;border-radius:50%;border:2px solid var(--border);cursor:pointer;padding:0;transition:transform .2s ease}
+.sw:hover{transform:scale(1.15)}
+.reset{border:none;border-radius:999px;padding:6px 12px;background:var(--accent-soft);color:var(--accent);font:inherit;font-weight:600;cursor:pointer}
+.page.active.leaving{animation:pageOut .3s ease forwards}
+@keyframes pageOut{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-16px) scale(.98)}}
+@keyframes pageIn{from{opacity:0;transform:translateY(24px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,-20px) scale(1.1)}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+.roster-hero{background:linear-gradient(135deg,#ffc83d,#ff9f1c);color:#2b2100;border-radius:16px;padding:28px 20px;text-align:center;margin-bottom:20px}
+.roster-kicker{font-weight:700;text-transform:uppercase;letter-spacing:.15em;font-size:.8rem;opacity:.8}
+.roster-title{font-size:clamp(2.2rem,7vw,3.4rem);font-weight:900;letter-spacing:-.02em;margin:4px 0 0;line-height:1.1}
+.roster-sub{margin-top:8px;opacity:.85}
+.roster{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.student{display:flex;align-items:center;gap:12px;background:var(--surface);border:2px solid #ffd966;border-radius:14px;padding:10px 12px;transition:transform .25s ease,box-shadow .25s ease}
+.student:hover{transform:translateY(-3px) rotate(-1deg);box-shadow:0 8px 18px rgba(255,159,28,.25)}
+.avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:.9rem;flex:0 0 auto}
+.avatar.c1{background:#ff7a59}.avatar.c2{background:#3566d6}.avatar.c3{background:#2bb673}.avatar.c4{background:#9b5de5}.avatar.c5{background:#f15bb5}
+.sname{font-weight:600;font-size:.95rem;line-height:1.3}
+.page.active .student{animation:fadeUp .5s ease backwards}
+footer{text-align:center;color:var(--muted);padding:24px;font-size:.9rem}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <h1>5-Є клас</h1>
+  <p>Ласкаво просимо на сайт нашого класу!</p>
+</header>
+
+<nav>
+  <a href="#about">Про нас</a>
+  <a href="#students">Учні</a>
+  <a href="#teachers">Вчителі</a>
+  <a href="#schedule">Розклад</a>
+  <a href="#news">Оголошення</a>
+  
+  <label class="picker" title="Колір фону">🎨 <input type="color" id="bgPicker" value="#f5f7fb" aria-label="Колір фону"></label>
+  <span class="swatches">
+    <button class="sw" data-color="#f5f7fb" style="background:#f5f7fb" title="Світлий" aria-label="Світлий"></button>
+    <button class="sw" data-color="#fff4e0" style="background:#fff4e0" title="Кремовий" aria-label="Кремовий"></button>
+    <button class="sw" data-color="#e8f7ee" style="background:#e8f7ee" title="М’ятний" aria-label="М’ятний"></button>
+    <button class="sw" data-color="#fde8ef" style="background:#fde8ef" title="Рожевий" aria-label="Рожевий"></button>
+    <button class="sw" data-color="#11141c" style="background:#11141c" title="Темний" aria-label="Темний"></button>
+  </span>
+  <button type="button" id="bgReset" class="reset">↺</button>
+</nav>
+
+<main>
+
+  <section id="about" class="page">
+    <h2>Про нас</h2>
+    <p>Ми — дружний 5-Є клас. Тут ми вчимося, підтримуємо одне одного й разом святкуємо успіхи. Цей сайт допоможе бути в курсі всіх подій класу.</p>
+    <div class="grid mt">
+      <div class="card"><strong>Класний керівник</strong>Оксана Миколаївна</div>
+      <div class="card"><strong>Кількість учнів</strong>27</div>
+      <div class="card"><strong>Наш девіз</strong>5-Є — це сила й клас,<br>Потужний Живчик — це про нас!</div>
+    </div>
+  </section>
+
+  <section id="students" class="page">
+    <div class="roster-hero">
+      <p class="roster-kicker">Наш клас</p>
+      <h2 class="roster-title">Учні 5-Є</h2>
+      <p class="roster-sub">Ось усі учні нашого класу</p>
+    </div>
+    <div class="roster">
+      <div class="student"><span class="avatar c1">АА</span><span class="sname">Андрій Андрійчук</span></div>
+      <div class="student"><span class="avatar c2">МГ</span><span class="sname">Матвій Ганько</span></div>
+      <div class="student"><span class="avatar c3">ДГ</span><span class="sname">Діана Гонишнюк</span></div>
+      <div class="student"><span class="avatar c4">ОГ</span><span class="sname">Олександр Горносталь</span></div>
+      <div class="student"><span class="avatar c5">МД</span><span class="sname">Мілана Давидова</span></div>
+      <div class="student"><span class="avatar c1">АД</span><span class="sname">Андрій Димидюк</span></div>
+      <div class="student"><span class="avatar c2">ЕЗ</span><span class="sname">Евеліна Задорожна</span></div>
+      <div class="student"><span class="avatar c3">ЄЗ</span><span class="sname">Єгор Задорожній</span></div>
+      <div class="student"><span class="avatar c4">ІК</span><span class="sname">Ілля Казьмірик</span></div>
+      <div class="student"><span class="avatar c5">ЗК</span><span class="sname">Злата Ковальчук</span></div>
+      <div class="student"><span class="avatar c1">КК</span><span class="sname">Кирило Кошлань</span></div>
+      <div class="student"><span class="avatar c2">ПК</span><span class="sname">Поліна Кушнірук</span></div>
+      <div class="student"><span class="avatar c3">ПЛ</span><span class="sname">Поліна Лейко</span></div>
+      <div class="student"><span class="avatar c4">КЛ</span><span class="sname">Кирило Лугина</span></div>
+      <div class="student"><span class="avatar c5">ОМ</span><span class="sname">Оксана Мельник</span></div>
+      <div class="student"><span class="avatar c1">КП</span><span class="sname">Крістіна Подорожня</span></div>
+      <div class="student"><span class="avatar c2">ІП</span><span class="sname">Ілля Прес</span></div>
+      <div class="student"><span class="avatar c3">ПР</span><span class="sname">Поліна Рускевич</span></div>
+      <div class="student"><span class="avatar c4">СС</span><span class="sname">Софія Слободенюк</span></div>
+      <div class="student"><span class="avatar c5">СТ</span><span class="sname">Софія Ткачук</span></div>
+      <div class="student"><span class="avatar c1">РХ</span><span class="sname">Роман Химач</span></div>
+      <div class="student"><span class="avatar c2">ЕХ</span><span class="sname">Емма Хохлова</span></div>
+      <div class="student"><span class="avatar c3">ДШ</span><span class="sname">Діана Шульга</span></div>
+    </div>
+  </section>
+
+  <section id="teachers" class="page">
+    <h2>Вчителі та предмети</h2>
+    <div class="grid">
+      <div class="card"><strong>Англійська мова</strong>Оксана Шахраюк</div>
+      <div class="card"><strong>Виховні години</strong>Оксана Шахраюк</div>
+      <div class="card"><strong>Здоров’я, безпека та добробут</strong>Олена Гончарова</div>
+      <div class="card"><strong>Зарубіжна література</strong>Жанна Іванівна Кондрайчук</div>
+      <div class="card"><strong>Інформатика</strong>Олег Багінський</div>
+      <div class="card"><strong>Історія</strong>Олена Сербіна</div>
+      <div class="card"><strong>Математика</strong>Анастасія Миколаївна Яворська</div>
+      <div class="card"><strong>Музичне мистецтво</strong>Олена Миколаївна Іщук</div>
+      <div class="card"><strong>Образотворче мистецтво</strong>Олег Ігорович Янчук</div>
+      <div class="card"><strong>Пізнаємо природу</strong>Олена Гончарова</div>
+      <div class="card"><strong>Технології</strong>Тетяна Анатоліївна Кравчук</div>
+      <div class="card"><strong>Українська література</strong>Ірина Макарчук</div>
+      <div class="card"><strong>Українська мова</strong>Ірина Макарчук</div>
+      <div class="card"><strong>Фізична культура</strong>Григорій Максимчук</div>
+    </div>
+  </section>
+
+  <section id="schedule" class="page">
+    <h2>Розклад уроків</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>№</th>
+            <th data-day="1">Пн</th>
+            <th data-day="2">Вт</th>
+            <th data-day="3">Ср</th>
+            <th data-day="4">Чт</th>
+            <th data-day="5">Пт</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td data-day="1">Пізнаємо природу<span class="time">13.00–13.45</span></td>
+            <td data-day="2">Математика<span class="time">13.00–13.45</span></td>
+            <td data-day="3">Українська мова<span class="time">13.00–13.45</span></td>
+            <td data-day="4">Математика<span class="time">13.00–13.45</span></td>
+            <td data-day="5">Англійська мова<span class="time">13.00–13.45</span></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td data-day="1">Математика<span class="time">13.50–14.35</span></td>
+            <td data-day="2">Українська мова<span class="time">13.50–14.35</span></td>
+            <td data-day="3">Фізкультура<span class="time">13.50–14.35</span></td>
+            <td data-day="4">Українська мова<span class="time">13.50–14.35</span></td>
+            <td data-day="5">Математика<span class="time">13.50–14.35</span></td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td data-day="1">Зарубіжна література<span class="time">14.45–15.30</span></td>
+            <td data-day="2">Фізкультура<span class="time">14.45–15.30</span></td>
+            <td data-day="3">Математика<span class="time">14.45–15.30</span></td>
+            <td data-day="4">Фізкультура<span class="time">14.45–15.30</span></td>
+            <td data-day="5">Пізнаємо природу<span class="time">14.45–15.30</span></td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td data-day="1">Музичне мистецтво<span class="time">15.50–16.35</span></td>
+            <td data-day="2">Англійська мова<span class="time">15.50–16.35</span></td>
+            <td data-day="3">Англійська мова<span class="time">15.50–16.35</span></td>
+            <td data-day="4">Англійська мова<span class="time">15.50–16.35</span></td>
+            <td data-day="5">Українська мова<span class="time">15.50–16.35</span></td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td data-day="1">Вступ до історії України<span class="time">16.40–17.25</span></td>
+            <td data-day="2">Інформатика<span class="time">16.40–17.25</span></td>
+            <td data-day="3">Вступ до історії України<span class="time">16.40–17.25</span></td>
+            <td data-day="4">Українська література<span class="time">16.40–17.25</span></td>
+            <td data-day="5">Трудове навчання<span class="time">16.40–17.25</span></td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td data-day="1">Українська література<span class="time">Дист. 10.50–11.35</span></td>
+            <td data-day="2">Образотворче мистецтво<span class="time">Дист. 10.50–11.35</span></td>
+            <td data-day="3">—</td>
+            <td data-day="4">—</td>
+            <td data-day="5">ІК «Здоров’я, безпека та добробут»<span class="time">Дист. 10.50–11.35</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="hint">Дист. — дистанційний урок. Поточний день підсвічується автоматично.</p>
+  </section>
+
+  <section id="news" class="page">
+    <h2>Оголошення</h2>
+    <ul class="news">
+      <li><strong>Батьківські збори</strong><br>Дату та час уточнимо найближчим часом.</li>
+      <li><strong>Термін здачі проєктів</strong><br>Деталі — у класного керівника.</li>
+      <li><strong>Шкільна екскурсія</strong><br>Збираємо заявки від батьків.</li>
+    </ul>
+  </section>
+
+  
+
+</main>
+
+<footer>© 5-Є клас · 2026/2027 навчальний рік</footer>
+
+<script>
+  const pages = [...document.querySelectorAll('.page')];
+  const navLinks = [...document.querySelectorAll('nav a')];
+  let switchTimer = null;
+  function showPage(override) {
+    const id = override || location.hash.slice(1) || 'about';
+    const valid = pages.some(p => p.id === id) ? id : 'about';
+    const current = pages.find(p => p.classList.contains('active') && p.id !== valid);
+    const next = pages.find(p => p.id === valid);
+    clearTimeout(switchTimer);
+    pages.forEach(p => p.classList.remove('leaving'));
+    if (current && next) {
+      const delay = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 300;
+      current.classList.add('leaving');
+      switchTimer = setTimeout(() => {
+        pages.forEach(p => { if (p !== next) p.classList.remove('active', 'leaving'); });
+        next.classList.add('active');
+        staggerCards();
+      }, delay);
+    } else {
+      pages.forEach(p => p.classList.toggle('active', p.id === valid));
+    }
+    navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + valid));
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener('hashchange', () => showPage());
+  navLinks.forEach(a => a.addEventListener('click', e => {
+    const id = a.getAttribute('href').slice(1);
+    if (!pages.some(p => p.id === id)) return;
+    e.preventDefault();
+    try { history.replaceState(null, '', '#' + id); } catch (err) {}
+    showPage(id);
+  }));
+  showPage();
+  const picker = document.getElementById('bgPicker');
+  const rootEl = document.documentElement;
+  const LIGHT_THEME = {'--surface':'#ffffff','--text':'#1c2233','--muted':'#5b6377','--accent':'#3566d6','--accent-soft':'#e7eefc','--border':'#dde2ee'};
+  const DARK_THEME = {'--surface':'#1a1f2c','--text':'#e7eaf2','--muted':'#9ba4b9','--accent':'#7ea6ff','--accent-soft':'#222b42','--border':'#2c3447'};
+  function isDarkColor(hex) {
+    const n = parseInt(hex.slice(1), 16);
+    const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+    return (0.299 * r + 0.587 * g + 0.114 * b) / 255 < 0.5;
+  }
+  function applyBg(hex) {
+    rootEl.style.setProperty('--bg', hex);
+    const theme = isDarkColor(hex) ? DARK_THEME : LIGHT_THEME;
+    Object.entries(theme).forEach(([k, v]) => rootEl.style.setProperty(k, v));
+    picker.value = hex;
+  }
+  function saveBg(hex) {
+    try { localStorage.setItem('bgColor', hex); } catch (e) {}
+  }
+  function resetBg() {
+    ['--bg', ...Object.keys(LIGHT_THEME)].forEach(k => rootEl.style.removeProperty(k));
+    try { localStorage.removeItem('bgColor'); } catch (e) {}
+    picker.value = getComputedStyle(rootEl).getPropertyValue('--bg').trim() || '#f5f7fb';
+  }
+  picker.addEventListener('input', e => { applyBg(e.target.value); saveBg(e.target.value); });
+  document.querySelectorAll('.sw').forEach(b => b.addEventListener('click', () => { applyBg(b.dataset.color); saveBg(b.dataset.color); }));
+  document.getElementById('bgReset').addEventListener('click', resetBg);
+  try { const saved = localStorage.getItem('bgColor'); if (saved) applyBg(saved); } catch (e) {}
+  function staggerCards() {
+    pages.forEach(p => {
+      if (!p.classList.contains('active')) return;
+      p.querySelectorAll('.card, .students li, .student, .news li, tbody tr').forEach((el, i) => { el.style.animationDelay = (i * 60) + 'ms'; });
+    });
+  }
+  window.addEventListener('hashchange', staggerCards);
+  staggerCards();
+  const today = new Date().getDay();
+  document.querySelectorAll('[data-day]').forEach(el => {
+    if (Number(el.dataset.day) === today) el.classList.add('today');
+  });
+</script>
+
+</body>
+</html>
